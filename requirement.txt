@@ -1,0 +1,9 @@
+numpy
+matplotlib
+pyrosm
+rasterio
+requests
+gdal
+seaborn
+lazy
+rtree
