@@ -1,0 +1,4 @@
+__pycache__/
+elevation/
+landcover/
+*/.DS_STORE
