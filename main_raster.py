@@ -1,6 +1,7 @@
 from dijkstra import dijkstraFromSrc,showPathDijkstra, generatePathDijkstra
 from rasterData import *
 from helper import findIndex
+import numpy as np
 
 
 
@@ -20,13 +21,14 @@ def main(bbox, src_coordinates, dest_coordinates):
 
     tile_size = 512
     SPLIT_DATA = False
-    DEBUG = True
+    DEBUG = False
     SHOW_PLOT = False
 
     alpha = 0
     h_weight = 0.1
     slope = 40
     resolution = 30 
+    x_res,y_res = 30,30
 
     # top left and bottom right coordinates
     # bbox: left bottom right top
@@ -36,8 +38,8 @@ def main(bbox, src_coordinates, dest_coordinates):
     if(SPLIT_DATA):
         split_tif_into_tiles(map_data_tif_path, split_data_dir, tile_size)
 
-    mergeFiles(split_data_dir, merged_data_path, bounding_box)
-    resolution = get_resolution(merged_data_path)
+    mergeFiles(split_data_dir, merged_data_path, bbox)
+    resolution, x_res, y_res = get_resolution(merged_data_path)
     
     map_data = getDataBoundingBox(merged_data_path, bbox)
 
@@ -65,15 +67,15 @@ def main(bbox, src_coordinates, dest_coordinates):
         plt.title("Distance from Source")
         plt.show()
 
-    showPathDijkstra(map_data[0], parentMat, src_latIdx, src_lonIdx, des_latIdx, des_lonIdx,alpha,h_weight,resolution,slope)
+        showPathDijkstra(map_data[0], parentMat, src_latIdx, src_lonIdx, des_latIdx, des_lonIdx,alpha,h_weight,resolution,slope)
 
-    path_array = generatepathDijkstra(map_data[0], parentMat, (src_latIdx,src_lonIdx), (des_latIdx,des_lonIdx))
+    path_array = generatePathDijkstra(map_data[0], parentMat, (src_latIdx,src_lonIdx), (des_latIdx,des_lonIdx))
 
     def convertToCoordinates(x):
         return get_coordinate_at_position(map_data[0], x[0], x[1], bbox)
 
-    np.apply_along_axis(convertToCoordinates, 1, path_array)
-    return path_array
+    return np.apply_along_axis(convertToCoordinates, 1, path_array)
+    
 
 
 

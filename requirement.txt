@@ -1,7 +1,11 @@
 numpy
 matplotlib
-pyrosm
 rasterio
+shapely
+flask
+flask_restful
+pandas
+pyrosm
 requests
 gdal
 seaborn

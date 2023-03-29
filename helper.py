@@ -47,27 +47,6 @@ def genMatrix(lat1, lon1, lat2, lon2, res):
 
     print("start: ", start_lat, start_lon)
     print("end: ", end_lat, end_lon)
-    
-    # # if (lat1 < lat2 and lon1 < lon2):
-    # start_lat = lat2
-    # start_lon = lon1
-    # end_lat = lat1
-    # end_lon = lon2
-    # if (lat1 > lat2 and lon1 < lon2):
-    #     start_lat = lat1
-    #     start_lon = lon1
-    #     end_lat = lat2
-    #     end_lon = lon2
-    # elif (lat1 < lat2 and lon1 > lon2):
-    #     start_lat = lat2
-    #     start_lon = lon2
-    #     end_lat = lat1
-    #     end_lon = lon1
-    # elif (lat1 > lat2 and lon1 > lon2):
-    #     start_lat = lat1
-    #     start_lon = lon2
-    #     end_lat = lat2
-    #     end_lon = lon1
 
     while (start_lat > end_lat):
         row = []
