@@ -30,7 +30,7 @@ def isValid(i,j,n,m):
     return False
 
 
-def dijkstraFromSrc(elevation_map, landcover_map, src_latIdx, src_lonIdx, alpha=0, h_weight=0, res=30, slope = 30): 
+def dijkstraFromSrc(elevation_map, landcover_map, src_latIdx, src_lonIdx, alpha=0, h_weight=0, res=30.0, slope = 30): 
     n, m = elevation_map.shape
 
     distFromSrc = initBinMap(src_latIdx, src_lonIdx, n, m)
@@ -85,4 +85,23 @@ def showPathDijkstra(elevation_map, parentMat, src_latIdx, src_lonIdx, des_latId
     plt.scatter(lon_list, lat_list, color='r',s=1)
     plt.title(f"Dijkstra -> alpha:{alpha}, h_weight:{h_weight}, res:{res}, slope:{slope}")
     plt.show()
+
+def generatePathDijkstra(elevation_map, parentMat, src_indices, des_indices):
+    
+    src_latIdx, src_lonIdx = src_indices
+
+    latIdx, lonIdx = des_indices
+    path=[]
+
+    temp_lat=0
+    temp_lon=0
+    while (latIdx!=src_latIdx) or (lonIdx!=src_lonIdx):
+        temp_lat=latIdx
+        temp_lon=lonIdx
+        path.append([latIdx, lonIdx])
+        latIdx = parentMat[temp_lat][temp_lon][0]
+        lonIdx = parentMat[temp_lat][temp_lon][1]
+
+    path_index_array=np.array(path)
+    return path_index_array
         
