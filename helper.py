@@ -48,11 +48,11 @@ def genMatrix(lat1, lon1, lat2, lon2, res):
     print("start: ", start_lat, start_lon)
     print("end: ", end_lat, end_lon)
     
-    # # if (lat1 < lat2 and lon1 < lon2):
-    # start_lat = lat2
-    # start_lon = lon1
-    # end_lat = lat1
-    # end_lon = lon2
+    # if (lat1 < lat2 and lon1 < lon2):
+    #     start_lat = lat2
+    #     start_lon = lon1
+    #     end_lat = lat1
+    #     end_lon = lon2
     # if (lat1 > lat2 and lon1 < lon2):
     #     start_lat = lat1
     #     start_lon = lon1
@@ -112,3 +112,9 @@ def neighbourDist(x1, y1, x2, y2, res):
     # Diagnoal points
     elif(abs(x1-x2)==1 and abs(y1-y2)==1):
         return res * (2**0.5)
+    
+
+def euclideanDist(elevation_map, x1, y1, x2, y2, h_weight, res):
+    hor_dist = (((x1 - x2)**2 + (y1 - y2)**2)**0.5 )*res
+    vert_dist = elevation_map[x1][y1] - elevation_map[x2][y2]
+    return ((hor_dist*h_weight)**2 + vert_dist**2)**0.5
