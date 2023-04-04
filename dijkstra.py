@@ -63,7 +63,7 @@ def dijkstraFromSrc(elevation_map, landcover_map, src_latIdx, src_lonIdx, alpha=
 
     return distFromSrc, parentMat
 
-def showPathDijkstra(elevation_map, parentMat, src_latIdx, src_lonIdx, des_latIdx, des_lonIdx, alpha, h_weight, res, slope):
+def showPath(elevation_map, parentMat, src_latIdx, src_lonIdx, des_latIdx, des_lonIdx, alpha, h_weight, res, slope):
     
     latIdx, lonIdx = des_latIdx, des_lonIdx
     path=[]
@@ -86,7 +86,7 @@ def showPathDijkstra(elevation_map, parentMat, src_latIdx, src_lonIdx, des_latId
     plt.title(f"Dijkstra -> alpha:{alpha}, h_weight:{h_weight}, res:{res}, slope:{slope}")
     plt.show()
 
-def generatePathDijkstra(elevation_map, parentMat, src_indices, des_indices):
+def generatePath(elevation_map, parentMat, src_indices, des_indices):
     
     src_latIdx, src_lonIdx = src_indices
 

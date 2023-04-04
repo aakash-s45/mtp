@@ -1,11 +1,12 @@
-from dijkstra import dijkstraFromSrc,showPathDijkstra, generatePathDijkstra
+from dijkstra import showPath, generatePath
+from astar import astarFromSrcWholeBB, astarFromSrcTillDes
 from rasterData import *
 from helper import findIndex
 import numpy as np
 
 
 
-def main(bbox, src_coordinates, dest_coordinates):
+def main(bbox, src_coordinates, dest_coordinates, DEBUG = False, SHOW_PLOT = False):
     """
     bbox: bounding box of the area of interest (left, bottom, right, top)
     resolution: Resolution of the DEM in meters
@@ -21,8 +22,6 @@ def main(bbox, src_coordinates, dest_coordinates):
 
     tile_size = 512
     SPLIT_DATA = False
-    DEBUG = False
-    SHOW_PLOT = False
 
     alpha = 0
     h_weight = 0.1
@@ -60,16 +59,16 @@ def main(bbox, src_coordinates, dest_coordinates):
     src_latIdx,src_lonIdx = get_position_at_coordinate(map_data[0], src_lat, src_lon, bbox)
     des_latIdx,des_lonIdx = get_position_at_coordinate(map_data[0], des_lat, des_lon, bbox)
 
-    distFromSrc, parentMat  = dijkstraFromSrc(map_data[0], map_data[1], src_latIdx, src_lonIdx,alpha,h_weight,resolution,slope)
+    distFromSrc, parentMat  = astarFromSrcTillDes(map_data[0], map_data[1], src_latIdx, src_lonIdx, des_latIdx, des_lonIdx, alpha, h_weight, resolution, slope)
 
     if SHOW_PLOT:
         plt.imshow(distFromSrc,cmap='gray')
         plt.title("Distance from Source")
         plt.show()
 
-        showPathDijkstra(map_data[0], parentMat, src_latIdx, src_lonIdx, des_latIdx, des_lonIdx,alpha,h_weight,resolution,slope)
+        showPath(map_data[0], parentMat, src_latIdx, src_lonIdx, des_latIdx, des_lonIdx,alpha,h_weight,resolution,slope)
 
-    path_array = generatePathDijkstra(map_data[0], parentMat, (src_latIdx,src_lonIdx), (des_latIdx,des_lonIdx))
+    path_array = generatePath(map_data[0], parentMat, (src_latIdx,src_lonIdx), (des_latIdx,des_lonIdx))
 
     def convertToCoordinates(x):
         return get_coordinate_at_position(map_data[0], x[0], x[1], bbox)
@@ -77,14 +76,11 @@ def main(bbox, src_coordinates, dest_coordinates):
     return np.apply_along_axis(convertToCoordinates, 1, path_array)
     
 
-
-
-
 if __name__ == "__main__":
     src_lat, src_lon = 31.733824874811024, 77.00073130455512
     des_lat, des_lon = 31.726524680775725, 77.00802691307562
     bounding_box = (76.98328796870653,31.70144173323603, 77.01350037105028,31.737946830245892)
-    path = main(bounding_box, (src_lat,src_lon), (des_lat,des_lon))
+    path = main(bounding_box, (src_lat,src_lon), (des_lat,des_lon),DEBUG=True, SHOW_PLOT=True)
     print(path)
     
 
