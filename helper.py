@@ -91,3 +91,9 @@ def neighbourDist(x1, y1, x2, y2, res):
     # Diagnoal points
     elif(abs(x1-x2)==1 and abs(y1-y2)==1):
         return res * (2**0.5)
+    
+
+def euclideanDist(elevation_map, x1, y1, x2, y2, h_weight, res):
+    hor_dist = (((x1 - x2)**2 + (y1 - y2)**2)**0.5 )*res
+    vert_dist = elevation_map[x1][y1] - elevation_map[x2][y2]
+    return ((hor_dist*h_weight)**2 + vert_dist**2)**0.5
