@@ -3,8 +3,9 @@ import math
 import rasterio
 import matplotlib.pyplot as plt
 from rasterio.merge import merge
-from shapely.geometry import box
+from shapely.geometry import box, Point
 from rasterio.mask import mask
+from helper import changeInLatitude, changeInLongitude
 
 def split_tif_into_tiles(tif_path, output_dir, tile_size=512):
     """
@@ -279,4 +280,33 @@ def get_position_at_coordinate(arr, lat, lon, bbox):
     
     return row_num, col_num
 
+def findIndexFromCoordinate(bbox, arr, lon, lat):
+    """
+    (lat1,lon1) = top left
+    (lat2,lon2) = bottom right
+    bbox: (lon1,lat1,lon2,lat2)
+    """
+    lon1, lat1, lon2, lat2 = bbox
+    rows, cols = arr.shape
+    
+    lat_start = max(lat1, lat2)
+    lat_end = min(lat1, lat2)
+    lon_start = min(lon1, lon2)
+    lon_end = max(lon1, lon2)
+
+    latIndex = ((lat_start - lat) * rows )// (lat_start-lat_end)
+    lonIndex = ((lon - lon_start) * cols) // (lon_end - lon_start) 
+    return int(latIndex), int(lonIndex)
+
+def getBoundingBoxFromAPoint(lat,lon,resolution):
+    c_lat = changeInLatitude(resolution,lat)*300
+    c_lon = changeInLongitude(resolution,lat)*300
+
+    lat1 = lat - c_lat
+    lat2 = lat + c_lat
+    lon1 = lon - c_lon
+    lon2 = lon + c_lon
+
+    # left, bottom, right, top
+    return (lon1,lat1,lon2,lat2)
 

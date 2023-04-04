@@ -11,3 +11,4 @@ gdal
 seaborn
 lazy
 rtree
+PyYAML

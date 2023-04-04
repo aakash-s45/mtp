@@ -21,7 +21,8 @@ resistanceDict = {
     80 : 10, 	# Permanent water bodies, blue
     90 : 9, 	# Herbaceous wetland, cyan
     95 : 10, 	# Mangroves, Strong cyan - lime green
-    100 : 8 	# Moss and lichen, Very soft yellow (skin)
+    100 : 8, 	# Moss and lichen, Very soft yellow (skin)
+    110 : 0     # Road network
 }
 
 def isValid(i,j,n,m):
@@ -105,3 +106,42 @@ def generatePath(elevation_map, parentMat, src_indices, des_indices):
     path_index_array=np.array(path)
     return path_index_array
         
+
+def dijkstraFromSrcToRoad(elevation_map, landcover_map, src_latIdx, src_lonIdx, alpha=0, h_weight=0, res=30.0, slope = 30): 
+    n, m = elevation_map.shape
+
+    distFromSrc = initBinMap(src_latIdx, src_lonIdx, n, m)
+    parentMat =  np.full((n, m,2), [-1,-1])
+    currDist = []
+    heapify(currDist)
+    heappush(currDist, [0, src_latIdx, src_lonIdx])
+    slope = (slope * math.pi) / 180
+
+    while len(currDist) != 0:
+        min_node = heappop(currDist)
+        dist = min_node[0]
+        curr_x = min_node[1]
+        curr_y = min_node[2]
+        des_x = -1
+        des_y = -1
+        if(landcover_map[curr_x][curr_y] == 110):
+            des_x = curr_x
+            des_y = curr_y
+            break
+
+        for neigh in neighbours:
+            new_x, new_y = curr_x+neigh[0], curr_y+neigh[1]
+            if isValid(new_x, new_y, n, m):
+                horizontal_dist = neighbourDist(curr_x, curr_y, new_x, new_y, res)
+                if (abs(elevation_map[curr_x][curr_y] - elevation_map[new_x][new_y]) / horizontal_dist) <= math.tan(slope):
+                    
+                    new_dist = dist + wDTDistance(elevation_map, curr_x, curr_y, new_x, new_y, h_weight, res) + (alpha)*resistanceDict[landcover_map[new_x][new_y]]
+                    if new_dist < distFromSrc[new_x][new_y] :
+                        parentMat[new_x][new_y] = [curr_x, curr_y]
+                        if parentMat[new_x][new_y][0] == -1 or parentMat[new_x][new_y][1] == -1:
+                            print("curr: ", curr_x, curr_y)
+                            print("new: ", new_x, new_y)
+                        distFromSrc[new_x][new_y] = new_dist
+                        heappush(currDist,[new_dist, new_x, new_y])
+
+    return distFromSrc, parentMat, (des_x, des_y)

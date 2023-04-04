@@ -5,8 +5,29 @@ import ast
 from main_raster import *
 import json
 import numpy as np
+import yaml
+import argparse
 
+# Define the command-line arguments
+parser = argparse.ArgumentParser()
+parser.add_argument('--config', required=True, help='Path to the config YAML file')
 
+# Parse the arguments
+args = parser.parse_args()
+
+# Load the YAML file
+with open(args.config, 'r') as f:
+    config = yaml.safe_load(f)
+
+    filePath = config['filePath']
+    tileSize = int(config['tileSize'])
+    SPLIT_DATA = bool(config['SPLIT_DATA'])
+    alpha = float(config['alpha'])
+    slope = float(config['slope'])
+    h_weight = float(config['h_weight'])
+    DEBUG = bool(config['DEBUG'])
+    SHOW_PLOT = bool(config['SHOW_PLOT'])
+    # print(filePath)
 
 app = Flask(__name__)
 api = Api(app)
@@ -52,15 +73,42 @@ class PathList(Resource):
         h_weight = float(args['h_weight'])
         
         # print(bounding_box)
-        path = main(bounding_box, (src_lat,src_lon), (des_lat,des_lon))
+        # path = main(bounding_box, (src_lat,src_lon), (des_lat,des_lon))
+        path = main(bounding_box, (src_lat,src_lon), (des_lat,des_lon),par_dir=filePath,tile_size=tileSize,SPLIT_DATA=SPLIT_DATA,alpha=alpha,slope=slope,h_weight=h_weight,DEBUG=DEBUG,SHOW_PLOT=SHOW_PLOT)
         path_list = path.tolist()
         # json_str = json.dumps(path_list)
 
         return {'data': path_list},200
-        # return {'data': "path list"},200
+
+class ToRoad(Resource):
+    def get(self):
+        return {'data': 'Hi, This is a test api for MTP'},200
+    
+    def post(self):
+        parser = reqparse.RequestParser()
+
+        parser.add_argument('src_lat', type=float, required=True, help='Source Point Latitude')
+        parser.add_argument('src_lon', type=float, required=True, help='Source Point Longitude')
+        parser.add_argument('radius', type=float, required=True, help='Radius of Search')
+
+        parser.add_argument('slope', type=float, required=True, help='Max Slope Allowed')
+        parser.add_argument('h_weight', type=float, required=True, help='Horizontal Weightage')
+
+        args = parser.parse_args()
+
+        src_lat,src_lon = float(args['src_lat']),float(args['src_lon'])
+        radius = float(args['radius'])
+
+        slope = float(args['slope'])
+        h_weight = float(args['h_weight'])
+        
+        path = PathToRoad((src_lat,src_lon), radius, par_dir=filePath,tile_size=tileSize,SPLIT_DATA=SPLIT_DATA,alpha=alpha,slope=slope,h_weight=h_weight,DEBUG=DEBUG,SHOW_PLOT=SHOW_PLOT)
+        path_list = path.tolist()
+        return {'data': path_list},200
 
 api.add_resource(MyApi, '/name')
 api.add_resource(PathList, '/path')
+api.add_resource(ToRoad, '/to_road')
 
 if __name__ == '__main__':
     app.run(debug=True)

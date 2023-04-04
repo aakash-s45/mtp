@@ -3,3 +3,4 @@ elevation/
 landcover/
 **/.DS_Store
 *.csv
+test.py
