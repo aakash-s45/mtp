@@ -180,7 +180,7 @@ def getDataBoundingBox(filepath, bbox):
         meta['width'], meta['height'] = data.shape[1], data.shape[0]
         # # Compute the affine transform of the window
         transform = rasterio.windows.transform(window, src.transform)
-        return data
+        return (data,src.bounds,src.transform)
 
         
 def plot_multiband_raster(raster_file,bbox):

@@ -25,7 +25,7 @@ def main(bbox, src_coordinates, dest_coordinates, DEBUG = False, SHOW_PLOT = Fal
 
     alpha = 0
     h_weight = 0.1
-    slope = 40
+    slope = 20
     resolution = 30 
     x_res,y_res = 30,30
 
@@ -40,7 +40,7 @@ def main(bbox, src_coordinates, dest_coordinates, DEBUG = False, SHOW_PLOT = Fal
     mergeFiles(split_data_dir, merged_data_path, bbox)
     resolution, x_res, y_res = get_resolution(merged_data_path)
     
-    map_data = getDataBoundingBox(merged_data_path, bbox)
+    map_data, bounds, tf = getDataBoundingBox(merged_data_path, bbox)
 
     if SHOW_PLOT:
         plot_multiband_raster(merged_data_path,bbox)
