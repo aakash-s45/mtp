@@ -83,10 +83,20 @@ function getRadiusofEarth(lat_radian) {
   function genElevationMatrix(lon1, lat1, lon2, lat2, res) {
       var bounding_box = genMatrix(lon1, lat1, lon2, lat2, res);
       print("Bounding Box: ", bounding_box);
+      var points = [
+  [[77.10104878479319,32.346191952341016], [77.38669331604319,32.27771435514376],[77.38669331604319,32.27771435514376]],
+  [[77.12302144104319,32.123159941913215], [77.30704243713694,32.10803904148201],[77.38669331604319,32.27771435514376]]
+];
   
+    
       // Map the function over all the points to get a list of elevations
-      var elevations = points.map(function(point) {
-        return [getElevationHelper(point[0]), getElevationHelper(point[1])];
+      var elevations = bounding_box.map(function(point) {
+        // var elevations = points.map(function(point) {
+        var temp = [];
+        for(var i =0;i<point.length;i++){
+          temp.push(getElevationHelper(point[i]));
+        }
+        return temp;
       });
   
       return elevations;
@@ -95,19 +105,20 @@ function getRadiusofEarth(lat_radian) {
   var res = 50;
   var elevations = genElevationMatrix(77.0845, 32.3166, 77.2342, 32.1795, res);
   print(elevations);
-  
+
+// here the code for 305*282 input ends
   
 
 
   // new code
 
-  var dataset = ee.Image('CGIAR/SRTM90_V4');
+//   var dataset = ee.Image('CGIAR/SRTM90_V4');
 // var elevation = dataset.select('elevation');
 // var slope = ee.Terrain.slope(elevation);
 // Map.setCenter(77.17245991760569,32.2446176598011, 10);
 // Map.addLayer(slope, {min: 0, max: 60}, 'slope');
 
-// 1,2 ->bbox 3,4 -> src,des 5->center
+// // 1,2 ->bbox 3,4 -> src,des 5->center
 
 // var multiPoint = geometry;
 
@@ -138,7 +149,7 @@ function getRadiusofEarth(lat_radian) {
 // // Clip the SRTM dataset to the bounding box
 // // Define the resolution of the sample data
 
-// var srtm_clipped = dataset.clip(bbox);
+// var srtm_clipped = dataset.clip(bbox);bound
 // print(typeof(srtm_clipped))
 // var resolution = 50; // meters
 // // Sample the SRTM dataset at the given resolution
@@ -194,39 +205,39 @@ function getRadiusofEarth(lat_radian) {
 
 
 
-// Load the SRTM dataset
-var elevation = ee.Image('USGS/SRTMGL1_003');
+// // Load the SRTM dataset
+// var elevation = ee.Image('USGS/SRTMGL1_003');
 
-// Define the matrix of coordinate points as a 2D list
-var points = [
-  [77.10104878479319,32.346191952341016], [77.38669331604319,32.27771435514376],
-  [77.12302144104319,32.123159941913215], [77.30704243713694,32.10803904148201],
-  [77.06946309143382,32.23358274667811]
-];
+// // Define the matrix of coordinate points as a 2D list
+// var points = [
+//   [77.10104878479319,32.346191952341016], [77.38669331604319,32.27771435514376],
+//   [77.12302144104319,32.123159941913215], [77.30704243713694,32.10803904148201],
+//   [77.06946309143382,32.23358274667811]
+// ];
 
-// Convert the matrix of coordinate points to a feature collection
-var featureCollection = ee.FeatureCollection(
-  ee.List(points).map(function(point) {
-    return ee.Feature(ee.Geometry.Point(point));
-  })
-);
+// // Convert the matrix of coordinate points to a feature collection
+// var featureCollection = ee.FeatureCollection(
+//   ee.List(points).map(function(point) {
+//     return ee.Feature(ee.Geometry.Point(point));
+//   })
+// );
 
-// Sample the elevation values at each point in the feature collection
-var elevationValues = elevation.sampleRegions({
-  collection: featureCollection,
-  scale: 30, // the resolution of the SRTM dataset is 30 meters
-  tileScale: 16 // increase this value to improve performance
-});
+// // Sample the elevation values at each point in the feature collection
+// var elevationValues = elevation.sampleRegions({
+//   collection: featureCollection,
+//   scale: 30, // the resolution of the SRTM dataset is 30 meters
+//   tileScale: 16 // increase this value to improve performance
+// });
 
-// Convert the elevation values to a 2D list
-var elevationList = elevationValues.aggregate_array('elevation');
-var elevationArray = ee.Array.cat([elevationList], 1);
-var elevationMatrix = elevationArray.toList().map(function(row) {
-  return ee.List(row);
-});
+// // Convert the elevation values to a 2D list
+// var elevationList = elevationValues.aggregate_array('elevation');
+// var elevationArray = ee.Array.cat([elevationList], 1);
+// var elevationMatrix = elevationArray.toList().map(function(row) {
+//   return ee.List(row);
+// });
 
-// Print the elevation matrix to the console
-print(elevationMatrix);
+// // Print the elevation matrix to the console
+// print(elevationMatrix);
 
 
 

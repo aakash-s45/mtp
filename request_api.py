@@ -38,11 +38,19 @@ class PathList(Resource):
         parser.add_argument('src_lon', type=float, required=True, help='Source Point Longitude')
         parser.add_argument('des_lat', type=float, required=True, help='Destination Point Latitude')
         parser.add_argument('des_lon', type=float, required=True, help='Destination Point Longitude')
+
+        parser.add_argument('slope', type=float, required=True, help='Max Slope Allowed')
+        parser.add_argument('h_weight', type=float, required=True, help='Horizontal Weightage')
+
         args = parser.parse_args()
 
         src_lat,src_lon = float(args['src_lat']),float(args['src_lon'])
         des_lat,des_lon = float(args['des_lat']),float(args['des_lon'])
         bounding_box = (float(args['left']),float(args['bottom']),float(args['right']),float(args['top']))
+
+        slope = float(args['slope'])
+        h_weight = float(args['h_weight'])
+        
         # print(bounding_box)
         path = main(bounding_box, (src_lat,src_lon), (des_lat,des_lon))
         path_list = path.tolist()
