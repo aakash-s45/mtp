@@ -116,7 +116,6 @@ def dijkstraFromSrcToRoad(elevation_map, landcover_map, src_latIdx, src_lonIdx, 
     heapify(currDist)
     heappush(currDist, [0, src_latIdx, src_lonIdx])
     slope = (slope * math.pi) / 180
-
     while len(currDist) != 0:
         min_node = heappop(currDist)
         dist = min_node[0]
