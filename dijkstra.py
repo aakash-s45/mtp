@@ -86,3 +86,39 @@ def showPathDijkstra(elevation_map, parentMat, src_latIdx, src_lonIdx, des_latId
     plt.title(f"Dijkstra -> alpha:{alpha}, h_weight:{h_weight}, res:{res}, slope:{slope}")
     plt.show()
         
+
+def dijkstraTillDes(elevation_map, landcover_map, src_latIdx, src_lonIdx, des_latIdx, des_lonIdx, alpha=0, h_weight=0, res=30, slope = 30): 
+    n, m = elevation_map.shape
+
+    distFromSrc = initBinMap(src_latIdx, src_lonIdx, n, m)
+    parentMat =  np.full((n, m,2), [-1,-1])
+    currDist = []
+    heapify(currDist)
+    heappush(currDist, [0, src_latIdx, src_lonIdx])
+    slope = (slope * math.pi) / 180
+    
+    while len(currDist) != 0:
+        min_node = heappop(currDist)
+        dist = min_node[0]
+        curr_x = min_node[1]
+        curr_y = min_node[2]
+
+        if curr_x == des_latIdx and curr_y == des_lonIdx:
+            break
+
+        for neigh in neighbours:
+            new_x, new_y = curr_x+neigh[0], curr_y+neigh[1]
+            if isValid(new_x, new_y, n, m):
+                horizontal_dist = neighbourDist(curr_x, curr_y, new_x, new_y, res)
+                if (abs(elevation_map[curr_x][curr_y] - elevation_map[new_x][new_y]) / horizontal_dist) <= math.tan(slope):
+                    
+                    new_dist = dist + wDTDistance(elevation_map, curr_x, curr_y, new_x, new_y, h_weight, res) + (alpha)*resistanceDict[landcover_map[new_x][new_y]]
+                    if new_dist < distFromSrc[new_x][new_y] :
+                        parentMat[new_x][new_y] = [curr_x, curr_y]
+                        if parentMat[new_x][new_y][0] == -1 or parentMat[new_x][new_y][1] == -1:
+                            print("curr: ", curr_x, curr_y)
+                            print("new: ", new_x, new_y)
+                        distFromSrc[new_x][new_y] = new_dist
+                        heappush(currDist,[new_dist, new_x, new_y])
+
+    return distFromSrc, parentMat

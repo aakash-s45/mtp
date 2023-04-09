@@ -100,3 +100,90 @@ def main():
 	#     print(response.json())
 	# else:
 	#     print(response.status_code)
+
+
+
+"""
+import rasterio
+from scipy.signal import find_peaks
+import numpy as np
+
+
+
+# Load the DEM file
+dem_file = "C:/Users/SAMARTH/Desktop/MTP/mtp/elevation/iit_mandi1.tif"
+with rasterio.open(dem_file) as src:
+    dem = src.read(1)
+
+# Find the highest peak in the DEM
+peaks, _ = find_peaks(dem.ravel(), distance=20)
+highest_peak = peaks[dem.ravel()[peaks].argmax()]
+
+# Traverse the DEM to find the saddle
+row, col = np.unravel_index(highest_peak, dem.shape)
+while True:
+    # Get the elevation values of the surrounding pixels
+    elev = dem[max(0, row-1):min(row+2, dem.shape[0]), 
+               max(0, col-1):min(col+2, dem.shape[1])]
+    # Find the lowest elevation value
+    min_elev = elev.min()
+    # Check if the current pixel is the saddle
+    if dem[row, col] == min_elev:
+        saddle = row * dem.shape[1] + col
+        break
+    # Move to the pixel with the lowest elevation value
+    row_offset, col_offset = np.unravel_index(elev.argmin(), elev.shape)
+    row += row_offset - 1
+    col += col_offset - 1
+
+# Calculate the prominence of the peak
+prominence = dem.ravel()[highest_peak] - dem.ravel()[saddle]
+print(f"Prominence of the highest peak: {prominence:.2f} meters")
+"""
+
+"""
+from skimage.feature import peak_local_max
+from skimage import filters
+import rasterio
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+# Open the DEM file using rasterio
+dem_file = "C:/Users/SAMARTH/Desktop/MTP/mtp/elevation/iit_mandi1.tif"
+with rasterio.open(dem_file) as src:
+    # Read the raster data
+    dem = src.read(1)
+
+    # Smooth the DEM using a Gaussian filter
+    dem_smooth = filters.gaussian(dem, sigma=3)
+
+    # Find the local maxima in the smoothed DEM
+    local_maxima = peak_local_max(dem_smooth, min_distance=5)
+
+    # Find the saddle points in the smoothed DEM
+    saddle_points = peak_local_max(-dem_smooth, min_distance=5)
+
+    # Find the prominence of each peak
+    prominences = []
+    for peak in local_maxima:
+        prominence = dem[peak[0], peak[1]] - np.max(dem_smooth[peak[0]-10:peak[0]+10, peak[1]-10:peak[1]+10])
+        prominences.append(prominence)
+
+    # Plot the DEM, local maxima, and saddle points
+    fig, ax = plt.subplots()
+    ax.imshow(dem, cmap='gray')
+    ax.scatter(local_maxima[:, 1], local_maxima[:, 0], marker='o', s=20, c='r')
+    ax.scatter(saddle_points[:, 1], saddle_points[:, 0], marker='o', s=20, c='b')
+    ax.set_title('Local Maxima and Saddle Points')
+
+    # Plot the prominences
+    fig, ax = plt.subplots()
+    ax.bar(range(len(prominences)), prominences)
+    ax.set_xlabel('Peak Index')
+    ax.set_ylabel('Prominence')
+    ax.set_title('Peak Prominences')
+
+    # Show the plots
+    plt.show()
+"""
