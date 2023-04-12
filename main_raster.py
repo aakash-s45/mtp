@@ -14,8 +14,8 @@ def main(bbox, src_coordinates, dest_coordinates, par_dir, tile_size = 512, alph
     dest_coordinates: Destination coordinates (latitude, longitude)
 
     """
-    map_data_tif_path = par_dir + '/data/merged_file.tif'
-    split_data_dir = par_dir + '/data/tile_data'
+    map_data_tif_path = par_dir + '/data/merged_file_w_roads.tif'
+    split_data_dir = par_dir + '/data/tile_data_roads'
     merged_data_path  = par_dir + '/data/temp/file.tif'
 
     # create subdirectories if they don't exist
@@ -81,6 +81,12 @@ def PathToRoad(src_coordinates, radius, par_dir, tile_size = 512, alpha = 0, h_w
     map_data_tif_path = par_dir + '/data/merged_file_w_roads.tif'
     split_data_dir = par_dir + '/data/tile_data_roads'
     merged_data_path  = par_dir + '/data/temp/file.tif'
+
+    # create subdirectories if they don't exist
+    if not os.path.exists(split_data_dir):
+        os.makedirs(split_data_dir)
+    if not os.path.exists(par_dir + '/data/temp'):
+        os.makedirs(par_dir + '/data/temp')
 
     x_res,y_res = resolution, resolution
 

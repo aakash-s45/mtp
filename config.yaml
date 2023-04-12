@@ -1,4 +1,5 @@
-filePath: /mtp
+filePath: ./container_data
+# filePath: /mtp
 tileSize: 512
 SPLIT_DATA: False
 alpha: 0

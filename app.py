@@ -7,6 +7,7 @@ import json
 import numpy as np
 import yaml
 from yaml.loader import SafeLoader
+from flask_cors import CORS
 
 # Load the config.yaml file
 with open('./config.yaml','r') as f:
@@ -23,6 +24,7 @@ with open('./config.yaml','r') as f:
 
 app = Flask(__name__)
 api = Api(app)
+CORS(app)
 
 
 class MyApi(Resource):
