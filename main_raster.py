@@ -18,6 +18,12 @@ def main(bbox, src_coordinates, dest_coordinates, par_dir, tile_size = 512, alph
     split_data_dir = par_dir + '/data/tile_data'
     merged_data_path  = par_dir + '/data/temp/file.tif'
 
+    # create subdirectories if they don't exist
+    if not os.path.exists(split_data_dir):
+        os.makedirs(split_data_dir)
+    if not os.path.exists(par_dir + '/data/temp'):
+        os.makedirs(par_dir + '/data/temp')
+    
     x_res,y_res = resolution, resolution
 
     # top left and bottom right coordinates

@@ -6,18 +6,11 @@ from main_raster import *
 import json
 import numpy as np
 import yaml
-import argparse
+from yaml.loader import SafeLoader
 
-# Define the command-line arguments
-parser = argparse.ArgumentParser()
-parser.add_argument('--config', required=True, help='Path to the config YAML file')
-
-# Parse the arguments
-args = parser.parse_args()
-
-# Load the YAML file
-with open(args.config, 'r') as f:
-    config = yaml.safe_load(f)
+# Load the config.yaml file
+with open('./config.yaml','r') as f:
+    config = yaml.load(f, Loader=SafeLoader)
 
     filePath = config['filePath']
     tileSize = int(config['tileSize'])
@@ -27,10 +20,10 @@ with open(args.config, 'r') as f:
     h_weight = float(config['h_weight'])
     DEBUG = bool(config['DEBUG'])
     SHOW_PLOT = bool(config['SHOW_PLOT'])
-    # print(filePath)
 
 app = Flask(__name__)
 api = Api(app)
+
 
 class MyApi(Resource):
     def get(self):
