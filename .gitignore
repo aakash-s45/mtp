@@ -4,3 +4,4 @@ landcover/
 **/.DS_Store
 *.csv
 test.py
+container_data
