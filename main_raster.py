@@ -14,10 +14,16 @@ def main(bbox, src_coordinates, dest_coordinates, par_dir, tile_size = 512, alph
     dest_coordinates: Destination coordinates (latitude, longitude)
 
     """
-    map_data_tif_path = par_dir + '/data/merged_file.tif'
-    split_data_dir = par_dir + '/data/tile_data'
+    map_data_tif_path = par_dir + '/data/merged_w_RW.tif'
+    split_data_dir = par_dir + '/data/tile_data_water'
     merged_data_path  = par_dir + '/data/temp/file.tif'
 
+    # create subdirectories if they don't exist
+    if not os.path.exists(split_data_dir):
+        os.makedirs(split_data_dir)
+    if not os.path.exists(par_dir + '/data/temp'):
+        os.makedirs(par_dir + '/data/temp')
+    
     x_res,y_res = resolution, resolution
 
     # top left and bottom right coordinates
@@ -76,6 +82,12 @@ def PathToRoad(src_coordinates, radius, par_dir, tile_size = 512, alpha = 0, h_w
     split_data_dir = par_dir + '/data/tile_data_roads'
     merged_data_path  = par_dir + '/data/temp/file.tif'
 
+    # create subdirectories if they don't exist
+    if not os.path.exists(split_data_dir):
+        os.makedirs(split_data_dir)
+    if not os.path.exists(par_dir + '/data/temp'):
+        os.makedirs(par_dir + '/data/temp')
+
     x_res,y_res = resolution, resolution
 
     # top left and bottom right coordinates
@@ -127,7 +139,7 @@ def PathToRoad(src_coordinates, radius, par_dir, tile_size = 512, alpha = 0, h_w
     
 
 if __name__ == "__main__":
-    par_dir = '/Users/aakash/Desktop/MTP2/codev2'
+    par_dir = "/Users/aakash/Desktop/MTP2/code"
     tile_size = 512
     SPLIT_DATA = False
 

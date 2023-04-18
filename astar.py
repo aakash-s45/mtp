@@ -21,7 +21,8 @@ resistanceDict = {
     80 : 10, 	# Permanent water bodies, blue
     90 : 9, 	# Herbaceous wetland, cyan
     95 : 10, 	# Mangroves, Strong cyan - lime green
-    100 : 8 	# Moss and lichen, Very soft yellow (skin)
+    100 : 8,	# Moss and lichen, Very soft yellow (skin)
+    110 : 0     # Road network
 }
 
 class cell:
