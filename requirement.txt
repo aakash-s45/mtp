@@ -12,3 +12,5 @@ seaborn
 lazy
 rtree
 PyYAML
+aioflask
+"Flask[async]"
