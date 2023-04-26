@@ -22,85 +22,16 @@ with open('./config.yaml','r') as f:
     h_weight = float(config['h_weight'])
     DEBUG = bool(config['DEBUG'])
     SHOW_PLOT = bool(config['SHOW_PLOT'])
+    CSV_FILE = config['CSV_FILE']
 
 app = Flask(__name__)
 api = Api(app)
 CORS(app)
 
-
-class MyApi(Resource):
-    def get(self):
-        return {'data': 'Hello World'},200
-    
-    def post(self):
-        parser = reqparse.RequestParser()
-
-        parser.add_argument('name', type=str, required=True, help='Enter your name')
-        args = parser.parse_args()
-        return {'data': f"Hello {args['name']}"},200
-
-class PathList(Resource):
-    def get(self):
-        return {'data': 'Hi, This is a test API. It returns the PathList from src to des'},200
-    
-    def post(self):
-        parser = reqparse.RequestParser()
-
-        parser.add_argument('left', type=float, required=True, help='Left Coordinate of Bounding Box')
-        parser.add_argument('bottom', type=float, required=True, help='Bottom Coordinate of Bounding Box')
-        parser.add_argument('right', type=float, required=True, help='Right Coordinate of Bounding Box')
-        parser.add_argument('top', type=float, required=True, help='Top Coordinate of Bounding Box')
-
-        parser.add_argument('src_lat', type=float, required=True, help='Source Point Latitude')
-        parser.add_argument('src_lon', type=float, required=True, help='Source Point Longitude')
-        parser.add_argument('des_lat', type=float, required=True, help='Destination Point Latitude')
-        parser.add_argument('des_lon', type=float, required=True, help='Destination Point Longitude')
-
-        parser.add_argument('slope', type=float, required=True, help='Max Slope Allowed')
-        parser.add_argument('h_weight', type=float, required=True, help='Horizontal Weightage')
-
-        args = parser.parse_args()
-
-        src_lat,src_lon = float(args['src_lat']),float(args['src_lon'])
-        des_lat,des_lon = float(args['des_lat']),float(args['des_lon'])
-        bounding_box = (float(args['left']),float(args['bottom']),float(args['right']),float(args['top']))
-
-        slope = float(args['slope'])
-        h_weight = float(args['h_weight'])
-        
-        # print(bounding_box)
-        # path = main(bounding_box, (src_lat,src_lon), (des_lat,des_lon))
-        path = main(bounding_box, (src_lat,src_lon), (des_lat,des_lon),par_dir=filePath,tile_size=tileSize,SPLIT_DATA=SPLIT_DATA,alpha=alpha,slope=slope,h_weight=h_weight,DEBUG=DEBUG,SHOW_PLOT=SHOW_PLOT)
-        path_list = path.tolist()
-        # json_str = json.dumps(path_list)
-
-        return {'data': path_list},200
-
-class ToRoad(Resource):
-    def get(self):
-        return {'data': 'Hi, This is a test api for MTP, path to road'},200
-    
-    def post(self):
-        parser = reqparse.RequestParser()
-
-        parser.add_argument('src_lat', type=float, required=True, help='Source Point Latitude')
-        parser.add_argument('src_lon', type=float, required=True, help='Source Point Longitude')
-        parser.add_argument('radius', type=float, required=True, help='Radius of Search')
-
-        parser.add_argument('slope', type=float, required=True, help='Max Slope Allowed')
-        parser.add_argument('h_weight', type=float, required=True, help='Horizontal Weightage')
-
-        args = parser.parse_args()
-
-        src_lat,src_lon = float(args['src_lat']),float(args['src_lon'])
-        radius = float(args['radius'])
-
-        slope = float(args['slope'])
-        h_weight = float(args['h_weight'])
-        
-        path = PathToRoad((src_lat,src_lon), radius, par_dir=filePath,tile_size=tileSize,SPLIT_DATA=SPLIT_DATA,alpha=alpha,slope=slope,h_weight=h_weight,DEBUG=DEBUG,SHOW_PLOT=SHOW_PLOT)
-        path_list = path.tolist()
-        return {'data': path_list},200
+# a test page for api which shows the available endpoint
+@app.route('/')
+def index():
+    return "Available Endpoints: /get_path, /get_road, /get_peaks"
 
 @app.route('/get_road', methods=['POST'])
 async def get_road_handler():
@@ -131,8 +62,6 @@ async def get_road_handler():
     except asyncio.CancelledError:
         return {'error': 'request cancelled'}, 500
 
-
-
 @app.route('/get_path', methods=['POST'])
 async def get_path_handler():
     parser = reqparse.RequestParser()
@@ -156,8 +85,6 @@ async def get_path_handler():
     slope = float(args['slope'])
     h_weight = float(args['h_weight'])
     
-    # print(bounding_box)
-    # path = main(bounding_box, (src_lat,src_lon), (des_lat,des_lon))
     # run the long running function in a separate task
     task = asyncio.create_task(main(bounding_box, (src_lat,src_lon), (des_lat,des_lon),par_dir=filePath,tile_size=tileSize,SPLIT_DATA=SPLIT_DATA,alpha=alpha,slope=slope,h_weight=h_weight,DEBUG=DEBUG,SHOW_PLOT=SHOW_PLOT))
     try:
@@ -171,20 +98,28 @@ async def get_path_handler():
     except asyncio.CancelledError:
         return {'error': 'request cancelled'}, 500
     
+@app.route('/get_peaks', methods=['POST'])
+async def get_peaks_handler():
+    parser = reqparse.RequestParser()
 
-# @app.route('/cancel', methods=['POST'])
-# def cancel():
-#     # cancel the task running the coroutine
-#     for task in asyncio.all_tasks():
-#         task.cancel()
-#         print("Cancelled")
+    parser.add_argument('left', type=float, required=True, help='Left Coordinate of Bounding Box')
+    parser.add_argument('bottom', type=float, required=True, help='Bottom Coordinate of Bounding Box')
+    parser.add_argument('right', type=float, required=True, help='Right Coordinate of Bounding Box')
+    parser.add_argument('top', type=float, required=True, help='Top Coordinate of Bounding Box')
+    args = parser.parse_args()
+    bounding_box = [float(args['left']),float(args['bottom']),float(args['right']),float(args['top'])]
     
-#     return 'Cancelled'
-
-
-api.add_resource(MyApi, '/name')
-api.add_resource(PathList, '/path')
-api.add_resource(ToRoad, '/to_road')
+    # run the long running function in a separate task
+    task = asyncio.create_task(getPeaksFromCsv(csv_file = CSV_FILE, bbox = bounding_box))
+    try:
+        # wait for the task to complete or be cancelled
+        result = await task
+        if result is not None:
+            return {'data': result},200
+        else:
+            return {'error': 'request cancelled'}, 500
+    except asyncio.CancelledError:
+        return {'error': 'request cancelled'}, 500
 
 if __name__ == '__main__':
     app.run(debug=True)

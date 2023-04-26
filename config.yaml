@@ -6,3 +6,4 @@ slope: 40
 h_weight: 0.1
 DEBUG: False
 SHOW_PLOT: False
+CSV_FILE: /Users/aakash/Desktop/MTP2/code/data/prominence-p100-bbox.csv
