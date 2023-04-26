@@ -315,7 +315,7 @@ def getBoundingBoxFromAPoint(lat,lon,resolution):
     return (lon1,lat1,lon2,lat2)
 
 
-async def getPeaksFromCsv(csv_file, bbox):
+def getPeaksFromCsv(csv_file, bbox):
     df = pd.read_csv(csv_file)
     df = df[(df['latitude'] >= bbox[1]) & (df['latitude'] <= bbox[3]) & (df['longitude'] >= bbox[0]) & (df['longitude'] <= bbox[2])]
     df = df.drop(['a', 'b','prominence'], axis=1)

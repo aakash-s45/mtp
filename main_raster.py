@@ -7,7 +7,7 @@ import asyncio
 
 
 
-async def main(bbox, src_coordinates, dest_coordinates, par_dir, tile_size = 512, alpha = 0, h_weight=0.1, slope=40,resolution=30, SPLIT_DATA = False,  DEBUG = False, SHOW_PLOT = False):
+def main(bbox, src_coordinates, dest_coordinates, par_dir, tile_size = 512, alpha = 0, h_weight=0.1, slope=40,resolution=30, SPLIT_DATA = False,  DEBUG = False, SHOW_PLOT = False):
     """
     bbox: bounding box of the area of interest (left, bottom, right, top)
     resolution: Resolution of the DEM in meters
@@ -78,7 +78,7 @@ async def main(bbox, src_coordinates, dest_coordinates, par_dir, tile_size = 512
         # catch the CancelledError exception and exit the function
         return None
 
-async def PathToRoad(src_coordinates, radius, par_dir, tile_size = 512, alpha = 0, h_weight=0.1, slope=40,resolution=30, SPLIT_DATA = False,  DEBUG = False, SHOW_PLOT = False):
+def PathToRoad(src_coordinates, radius, par_dir, tile_size = 512, alpha = 0, h_weight=0.1, slope=40,resolution=30, SPLIT_DATA = False,  DEBUG = False, SHOW_PLOT = False):
     """
     resolution: Resolution of the DEM in meters
     src_coordinates: Source coordinates (latitude, longitude)
