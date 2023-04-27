@@ -92,7 +92,7 @@ def PathToRoad(src_coordinates, radius, par_dir, tile_size = 512, alpha = 0, h_w
 
     try:
         map_data_tif_path = par_dir + '/data/merged_file_w_roads.tif'
-        split_data_dir = par_dir + '/data/tile_data_roads'
+        split_data_dir = par_dir + '/data/tile_data_water'
         merged_data_path  = par_dir + '/data/temp/file.tif'
 
         # create subdirectories if they don't exist

@@ -42,7 +42,11 @@ def split_tif_into_tiles(tif_path, output_dir, tile_size=512):
                     'transform': transform,
                     'driver': 'GTiff'
                 })
-
+                
+                # if output directory does not exist, create it
+                if not os.path.exists(output_dir):
+                    os.makedirs(output_dir)
+        
                 # Read the tile data and write it to a new file
                 tile_path = os.path.join(output_dir, f'tile_{tile_x}_{tile_y}.tif')
                 with rasterio.open(tile_path, 'w', **profile) as dst:
@@ -76,7 +80,6 @@ def mergeFiles(directory_path,merged_dataset_path, bbox):
                     dem_files.append(path)
     
     # Merge the DEM files
-    # print(dem_files)
     src_files_to_mosaic = [rasterio.open(path) for path in dem_files]
     mosaic, out_trans = merge(src_files_to_mosaic)
     
@@ -312,7 +315,7 @@ def getBoundingBoxFromAPoint(lat,lon,resolution):
     return (lon1,lat1,lon2,lat2)
 
 
-async def getPeaksFromCsv(csv_file, bbox):
+def getPeaksFromCsv(csv_file, bbox):
     df = pd.read_csv(csv_file)
     df = df[(df['latitude'] >= bbox[1]) & (df['latitude'] <= bbox[3]) & (df['longitude'] >= bbox[0]) & (df['longitude'] <= bbox[2])]
     df = df.drop(['a', 'b','prominence'], axis=1)
