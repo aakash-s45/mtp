@@ -4,7 +4,7 @@ from rasterData import *
 import numpy as np
 import asyncio
 
-def main(bbox, src_coordinates, dest_coordinates, par_dir, tile_size = 512, alpha = 0, h_weight=0.1, slope=40,resolution=30, SPLIT_DATA = False,  DEBUG = False, SHOW_PLOT = False):
+def PathToDestination(bbox, src_coordinates, dest_coordinates, par_dir, tile_size = 512, alpha = 0, h_weight=0.1, slope=40,resolution=30, SPLIT_DATA = False,  DEBUG = False, SHOW_PLOT = False):
     """
     bbox: bounding box of the area of interest (left, bottom, right, top)
     resolution: Resolution of the DEM in meters
@@ -179,7 +179,7 @@ if __name__ == "__main__":
     # src_lat, src_lon = 31.733824874811024, 77.00073130455512
     # des_lat, des_lon = 31.726524680775725, 77.00802691307562
     # bounding_box = (76.98328796870653,31.70144173323603, 77.01350037105028,31.737946830245892)
-    # path = main(bounding_box, (src_lat,src_lon), (des_lat,des_lon), par_dir = par_dir, tile_size=tile_size,SPLIT_DATA=SPLIT_DATA,alpha=alpha,h_weight=h_weight,slope=slope,resolution=resolution, DEBUG=True, SHOW_PLOT=True)
+    # path = PathToDestination(bounding_box, (src_lat,src_lon), (des_lat,des_lon), par_dir = par_dir, tile_size=tile_size,SPLIT_DATA=SPLIT_DATA,alpha=alpha,h_weight=h_weight,slope=slope,resolution=resolution, DEBUG=True, SHOW_PLOT=True)
     # print(path)
 
     # Run Path to road function

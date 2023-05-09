@@ -70,7 +70,7 @@ class PathList(Resource):
         
         # print(bounding_box)
         # path = main(bounding_box, (src_lat,src_lon), (des_lat,des_lon))
-        path = main(bounding_box, (src_lat,src_lon), (des_lat,des_lon),par_dir=filePath,tile_size=tileSize,SPLIT_DATA=SPLIT_DATA,alpha=alpha,slope=slope,h_weight=h_weight,DEBUG=DEBUG,SHOW_PLOT=SHOW_PLOT)
+        path = PathToDestination(bounding_box, (src_lat,src_lon), (des_lat,des_lon),par_dir=filePath,tile_size=tileSize,SPLIT_DATA=SPLIT_DATA,alpha=alpha,slope=slope,h_weight=h_weight,DEBUG=DEBUG,SHOW_PLOT=SHOW_PLOT)
         
         if path is not None:
             path_list = path.tolist()
