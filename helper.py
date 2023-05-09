@@ -97,3 +97,19 @@ def euclideanDist(elevation_map, x1, y1, x2, y2, h_weight, res):
     hor_dist = (((x1 - x2)**2 + (y1 - y2)**2)**0.5 )*res
     vert_dist = elevation_map[x1][y1] - elevation_map[x2][y2]
     return ((hor_dist*h_weight)**2 + vert_dist**2)**0.5
+
+class LandcoverInfo:
+    resistanceDict = {
+        10 : 6, 	# Tree cover, green,
+        20 : 5, 	# Shrubland, orange-yellow
+        30 : 3, 	# Grassland, lemon-yellow
+        40 : 4, 	# Cropland, pink ->5
+        50 : 1, 	# Built-up, red
+        60 : 2, 	# Bare / sparse vegetation, gray
+        70 : 8, 	# Snow and ice, white, white
+        80 : 10, 	# Permanent water bodies, blue
+        90 : 9, 	# Herbaceous wetland, cyan
+        95 : 10, 	# Mangroves, Strong cyan - lime green
+        100 : 8, 	# Moss and lichen, Very soft yellow (skin)
+        110 : 0     # Road network
+    }

@@ -2,25 +2,12 @@ import math
 from copy import deepcopy
 import numpy as np
 import matplotlib.pyplot as plt
-from helper import neighbourDist
+from helper import neighbourDist, LandcoverInfo
 
 # kernel for forward and backward pass 
 fmask = [[-1, -1, -1, 0], [-1, 0, 1, -1]]
 bmask = [[1, 1, 1, 0], [1, 0, -1, 1]]
 
-resistanceDict = {
-    10 : 6, 	# Tree cover, green,
-    20 : 5, 	# Shrubland, orange-yellow
-    30 : 3, 	# Grassland, lemon-yellow
-    40 : 4, 	# Cropland, pink ->5
-    50 : 1, 	# Built-up, red
-    60 : 2, 	# Bare / sparse vegetation, gray
-    70 : 8, 	# Snow and ice, white, white
-    80 : 10, 	# Permanent water bodies, blue
-    90 : 9, 	# Herbaceous wetland, cyan
-    95 : 10, 	# Mangroves, Strong cyan - lime green
-    100 : 8 	# Moss and lichen, Very soft yellow (skin)
-}
 
 def wDTDistance(mat, x1, y1, x2, y2, h_weight, res=30):
     """weighted distance between two points (eucledien distance)"""
@@ -31,17 +18,6 @@ def wDTDistance(mat, x1, y1, x2, y2, h_weight, res=30):
         return ((mat[x1][y1] - mat[x2][y2])**2 + (h_weight*res*(2**0.5))**2) ** 0.5
         # return ((mat[x1][y1] - mat[x2][y2])**2 + 2) ** 0.5
 
-def dTDistance(mat, x1, y1, x2, y2,res=30):
-    """distance function 1"""
-    return (abs(mat[x1][y1] - mat[x2][y2]) + 1*res)
-
-
-def r2DtDistance(mat, x1, y1, x2, y2,res=30):
-    """distance function 2"""
-    if((abs(x1-x2)==1 and abs(y1-y2)==0) or (abs(x1-x2)==0 and abs(y1-y2)==1)):
-        return (abs(mat[x1][y1] - mat[x2][y2]) + 1*res)
-    elif(abs(x1-x2)==1 and abs(y1-y2)==1):
-        return (abs(mat[x1][y1] - mat[x2][y2]) + (2**0.5)*res)
 
 def initBinMap(i, j, n, m):
     """ Initialize binary map of given size"""
@@ -78,7 +54,7 @@ def distanceTransform(elevation_map, landcover_map, bin_map, accuracy, alpha=0, 
                     horizontal_dist = neighbourDist(row, col, row_prev, col_prev, res)
                     if (abs(elevation_map[row][col] - elevation_map[row_prev][col_prev]) / horizontal_dist) <= math.tan(slope):
                         
-                        new_dist = bin_map[row_prev][col_prev] + wDTDistance(elevation_map, row, col, row_prev, col_prev, h_weight, res) + (alpha)*resistanceDict[landcover_map[row][col]]
+                        new_dist = bin_map[row_prev][col_prev] + wDTDistance(elevation_map, row, col, row_prev, col_prev, h_weight, res) + (alpha)*LandcoverInfo().resistanceDict[landcover_map[row][col]]
                         if new_dist < bin_map[row][col]:
                             if bin_map[row][col]-new_dist > accuracy:
                                 notConverged = True
@@ -93,7 +69,7 @@ def distanceTransform(elevation_map, landcover_map, bin_map, accuracy, alpha=0, 
                     horizontal_dist = neighbourDist(row, col, row_prev, col_prev, res)
                     if (abs(elevation_map[row][col] - elevation_map[row_prev][col_prev]) / horizontal_dist) <= math.tan(slope):
 
-                        new_dist = bin_map[row_prev][col_prev] + wDTDistance(elevation_map, row, col, row_prev, col_prev, h_weight, res) + (alpha)*resistanceDict[landcover_map[row][col]]
+                        new_dist = bin_map[row_prev][col_prev] + wDTDistance(elevation_map, row, col, row_prev, col_prev, h_weight, res) + (alpha)*LandcoverInfo().resistanceDict[landcover_map[row][col]]
                         if new_dist < bin_map[row][col]:
                             if bin_map[row][col]-new_dist > accuracy:
                                 notConverged = True
