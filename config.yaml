@@ -1,4 +1,5 @@
-filePath: /Users/aakash/Desktop/MTP2/codev2
+filePath: ./container_data
+# filePath: /mtp
 tileSize: 512
 SPLIT_DATA: False
 alpha: 0
@@ -6,3 +7,4 @@ slope: 40
 h_weight: 0.1
 DEBUG: False
 SHOW_PLOT: False
+CSV_FILE: ./container_data/data/prominence-p100-bbox.csv

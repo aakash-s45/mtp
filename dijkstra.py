@@ -131,6 +131,8 @@ def dijkstraFromSrcToRoad(elevation_map, landcover_map, src_latIdx, src_lonIdx, 
         for neigh in neighbours:
             new_x, new_y = curr_x+neigh[0], curr_y+neigh[1]
             if isValid(new_x, new_y, n, m):
+                if landcover_map[new_x][new_y] == 80:
+                    continue
                 horizontal_dist = neighbourDist(curr_x, curr_y, new_x, new_y, res)
                 if (abs(elevation_map[curr_x][curr_y] - elevation_map[new_x][new_y]) / horizontal_dist) <= math.tan(slope):
                     
