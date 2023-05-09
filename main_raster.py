@@ -1,7 +1,6 @@
-from dijkstra import showPath, generatePath, dijkstraFromSrcToRoad
-from astar import astarFromSrcWholeBB, astarFromSrcTillDes
+from dijkstra import showPath, generatePath, dijkstraTillRoad
+from astar import astarSearch
 from rasterData import *
-from helper import findIndex
 import numpy as np
 import asyncio
 
@@ -54,19 +53,17 @@ def main(bbox, src_coordinates, dest_coordinates, par_dir, tile_size = 512, alph
         src_latIdx,src_lonIdx = findIndexFromCoordinate(bbox, map_data[0], src_lon, src_lat)
         des_latIdx,des_lonIdx = findIndexFromCoordinate(bbox, map_data[0], des_lon, des_lat)
 
-        # src_latIdx,src_lonIdx = get_position_at_coordinate(map_data[0], src_lat, src_lon, bbox)
-        # des_latIdx,des_lonIdx = get_position_at_coordinate(map_data[0], des_lat, des_lon, bbox)
 
-        distFromSrc, parentMat  = astarFromSrcTillDes(map_data[0], map_data[1], src_latIdx, src_lonIdx, des_latIdx, des_lonIdx, alpha, h_weight, resolution, slope)
+        distFromSrc, parentMat  = astarSearch(map_data[0], map_data[1], src_latIdx, src_lonIdx, des_latIdx, des_lonIdx, alpha, h_weight, resolution, slope)
 
         if SHOW_PLOT:
             plt.imshow(distFromSrc,cmap='gray')
             plt.title("Distance from Source")
             plt.show()
 
-            showPath(map_data[0], parentMat, src_latIdx, src_lonIdx, des_latIdx, des_lonIdx,alpha,h_weight,resolution,slope)
+            showPath(map_data[0], parentMat, src_latIdx, src_lonIdx, des_latIdx, des_lonIdx,alpha,h_weight,resolution,slope,'A*')
 
-        path_array = generatePath(map_data[0], parentMat, (src_latIdx,src_lonIdx), (des_latIdx,des_lonIdx))
+        path_array = generatePath(parentMat, (src_latIdx,src_lonIdx), (des_latIdx,des_lonIdx))
 
         def convertToCoordinates(x):
             return get_coordinate_at_position(map_data[0], x[0], x[1], bbox)
@@ -139,7 +136,7 @@ def PathToRoad(src_coordinates, radius, par_dir, tile_size = 512, alpha = 0, h_w
         if(map_data[1][src_latIdx,src_lonIdx]==110):
             return np.array([[*src_coordinates]])
 
-        distFromSrc, parentMat, (des_latIdx, des_lonIdx) = dijkstraFromSrcToRoad(map_data[0], map_data[1], src_latIdx, src_lonIdx,alpha,h_weight,resolution,slope)
+        distFromSrc, parentMat, (des_latIdx, des_lonIdx) = dijkstraTillRoad(elevation_map, landcover_map, src_latIdx, src_lonIdx)(map_data[0], map_data[1], src_latIdx, src_lonIdx,alpha,h_weight,resolution,slope)
 
         if DEBUG:
             print(f"Destination Index: {des_latIdx,des_lonIdx}")
@@ -155,7 +152,7 @@ def PathToRoad(src_coordinates, radius, par_dir, tile_size = 512, alpha = 0, h_w
 
                 showPath(map_data[0], parentMat, src_latIdx, src_lonIdx, des_latIdx, des_lonIdx,alpha,h_weight,resolution,slope)
 
-            path_array = generatePath(map_data[0], parentMat, (src_latIdx,src_lonIdx), (des_latIdx,des_lonIdx))
+            path_array = generatePath(parentMat, (src_latIdx,src_lonIdx), (des_latIdx,des_lonIdx))
             # check if path array is empty or not 
             if path_array.size != 0:
                 return np.apply_along_axis(convertToCoordinates, 1, path_array)
