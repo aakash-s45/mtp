@@ -136,7 +136,7 @@ def PathToRoad(src_coordinates, radius, par_dir, tile_size = 512, alpha = 0, h_w
         if(map_data[1][src_latIdx,src_lonIdx]==110):
             return np.array([[*src_coordinates]])
 
-        distFromSrc, parentMat, (des_latIdx, des_lonIdx) = dijkstraTillRoad(elevation_map, landcover_map, src_latIdx, src_lonIdx)(map_data[0], map_data[1], src_latIdx, src_lonIdx,alpha,h_weight,resolution,slope)
+        distFromSrc, parentMat, (des_latIdx, des_lonIdx) = dijkstraTillRoad(map_data[0], map_data[1], src_latIdx, src_lonIdx,alpha,h_weight,resolution,slope)
 
         if DEBUG:
             print(f"Destination Index: {des_latIdx,des_lonIdx}")

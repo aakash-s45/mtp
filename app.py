@@ -30,14 +30,7 @@ CORS(app)
 
 class MyApi(Resource):
     def get(self):
-        return {'data': 'Hello World'},200
-    
-    def post(self):
-        parser = reqparse.RequestParser()
-
-        parser.add_argument('name', type=str, required=True, help='Enter your name')
-        args = parser.parse_args()
-        return {'data': f"Hello {args['name']}"},200
+        return {'data': 'Available end-points are /get_peaks, /path and /to_road'},200
 
 class PathList(Resource):
     def get(self):
@@ -122,7 +115,7 @@ def get_peaks_handler():
     result = getPeaksFromCsv(csv_file = CSV_FILE, bbox = bounding_box)
     return {'data': result},200
 
-api.add_resource(MyApi, '/name')
+api.add_resource(MyApi, '/')
 api.add_resource(PathList, '/path')
 api.add_resource(ToRoad, '/to_road')
 
