@@ -8,3 +8,5 @@ data/
 test
 container_data
 .deployment
+pickles/
+testing.py
